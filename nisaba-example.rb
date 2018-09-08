@@ -22,9 +22,9 @@ Nisaba.configure do |n|
     !KNOWN_CONTRIBUTORS.include?(context.payload.dig(:pull_request, :user, :login))
   end
 
-  GENERATED_FILES = %w[db/data.sql Gemfile.lock yarn.lock]
+  GENERATED_FILES = %w[Gemfile.lock yarn.lock db/data.sql]
 
-  n.comment 'non-generated diff count' do |c|
+  n.comment 'manual diff count' do |c|
     c.when do |context|
       GENERATED_FILES.any? { |f| context.file?(f) }
     end
