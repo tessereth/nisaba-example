@@ -4,22 +4,24 @@ require 'bundler/setup'
 require 'nisaba'
 
 Nisaba.configure do |n|
-  n.api_token = ENV['API_TOKEN']
-  n.webhook_secret = ENV['WEBHOOK_SECRET']
+  n.app_id = ENV['GITHUB_APP_IDENTIFIER']
+  n.app_private_key = ENV['GITHUB_PRIVATE_KEY'].gsub('\n', "\n")
+  n.webhook_secret = ENV['GITHUB_WEBHOOK_SECRET']
 
-  n.label 'migration' do |pr|
-    pr.file?(%r{db/migrate/.*})
-  end
+  # n.label 'migration' do |pr|
+  #   pr.file?(%r{db/migrate/.*})
+  # end
 
   n.label 'style' do |pr|
-    pr.file?(/.*\.scss/)
+    # pr.file?(/.*\.scss/)
+    true
   end
 
   KNOWN_CONTRIBUTORS = %w[tessereth]
 
-  n.label 'outside contributor' do |pr|
-    !KNOWN_CONTRIBUTORS.include?(pr.author)
-  end
+  # n.label 'outside contributor' do |pr|
+  #   !KNOWN_CONTRIBUTORS.include?(pr.author)
+  # end
 
   GENERATED_FILES = %w[db/data.sql Gemfile.lock yarn.lock]
 
