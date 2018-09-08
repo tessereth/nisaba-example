@@ -8,13 +8,12 @@ Nisaba.configure do |n|
   n.app_private_key = ENV['GITHUB_PRIVATE_KEY'].gsub('\n', "\n")
   n.webhook_secret = ENV['GITHUB_WEBHOOK_SECRET']
 
-  # n.label 'migration' do |pr|
-  #   pr.file?(%r{db/migrate/.*})
-  # end
+  n.label 'style' do |context|
+    context.file?(/.*\.scss/)
+  end
 
-  n.label 'style' do |pr|
-    # pr.file?(/.*\.scss/)
-    true
+  n.label 'dependencies' do |context|
+    context.file?('Gemfile.lock')
   end
 
   KNOWN_CONTRIBUTORS = %w[tessereth]

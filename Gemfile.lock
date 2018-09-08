@@ -2,6 +2,7 @@ PATH
   remote: ../nisaba
   specs:
     nisaba (0.1.0)
+      git_diff
       jwt
       octokit
       sinatra
@@ -13,6 +14,7 @@ GEM
       public_suffix (>= 2.0.2, < 4.0)
     faraday (0.15.2)
       multipart-post (>= 1.2, < 3)
+    git_diff (0.4.1)
     jwt (2.1.0)
     multipart-post (2.0.0)
     mustermann (1.0.3)
