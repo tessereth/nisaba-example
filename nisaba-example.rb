@@ -43,22 +43,14 @@ Nisaba.configure do |n|
       "Diff ignoring generated files: +#{added} -#{removed}"
     end
 
-    c.update_strategy = :edit # or :replace
+    c.update_strategy = :edit # or :replace, :never
   end
 
   n.review 'remove column' do |c|
     c.when do |context|
-      context.diff.files.each do |file|
-        next unless file.a_path.match?(%r{db/migrate/.*})
-        file.hunks.each do |hunk|
-          hunk.lines.each do |line|
-            if line.addition? && line.content.include?('remove_column')
-              return true
-            end
-          end
-        end
+      context.each_line(file_filter: %r{db/migrate/.*}).any? do |_file, line, _position|
+        line.addition? && line.content.include?('remove_column')
       end
-      return false
     end
 
     c.body do
@@ -66,18 +58,16 @@ Nisaba.configure do |n|
         "\n\nSee https://github.com/ankane/strong_migrations#removing-a-column for more details"
     end
 
-    # TODO: figure out how to do line comments. Maybe something like this?
     c.line_comments do |context|
-      comments = []
-      context.each_diff_line do |filename, line, position|
-        next unless filename.match?(%r{db/migrate/.*})
-        next unless line.content.include?('remove_column')
-        comments << { path: filename, position: position, body: 'Column removed here'}
-      end
-      comments
+      context.each_line(file_filter: %r{db/migrate/.*}).map do |file, line, position|
+        if line.addition? && line.content.include?('remove_column')
+          { path: file.b_path, position: position, body: 'Column removed here'}
+        end
+      end.compact
     end
 
     c.type = :comment
+    c.update_strategy = :never # update not currently supported
   end
 end
 
